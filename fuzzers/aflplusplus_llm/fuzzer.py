@@ -275,6 +275,10 @@ def fuzz(input_corpus,
         os.environ['AFL_CMPLOG_ONLY_NEW'] = '1'
         if 'ADDITIONAL_ARGS' in os.environ:
             flags += os.environ['ADDITIONAL_ARGS'].split(' ')
+    
+    # custom mutator
+    os.environ['AFL_CUSTOM_MUTATOR_ONLY']='1'
+    os.environ['AFL_CUSTOM_MUTATOR_LIBRARY']='custom_mutators/aflpp'
 
     afl_fuzzer.run_afl_fuzz(input_corpus,
                             output_corpus,
