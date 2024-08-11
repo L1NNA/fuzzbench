@@ -47,8 +47,8 @@ COPY AFLplusplus /afl
 RUN cd /afl && \
     unset CFLAGS CXXFLAGS && \
     export CC=clang AFL_NO_X86=1 && \
-    export AFL_CUSTOM_MUTATOR_ONLY=1 && \
-    AFL_CUSTOM_MUTATOR_LIBRARY=custom_mutators/aflpp \
+    # export AFL_CUSTOM_MUTATOR_ONLY=1 && \
+    # AFL_CUSTOM_MUTATOR_LIBRARY=custom_mutators/aflpp \
     # PYTHON_INCLUDE=/ 
     make && \
     cp utils/aflpp_driver/libAFLDriver.a /

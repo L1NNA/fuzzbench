@@ -278,7 +278,7 @@ def fuzz(input_corpus,
     
     # custom mutator
     os.environ['AFL_CUSTOM_MUTATOR_ONLY']='1'
-    os.environ['AFL_CUSTOM_MUTATOR_LIBRARY']='custom_mutators/aflpp'
+    os.environ['AFL_CUSTOM_MUTATOR_LIBRARY']='custom_mutators/examples/example.py'
 
     afl_fuzzer.run_afl_fuzz(input_corpus,
                             output_corpus,
