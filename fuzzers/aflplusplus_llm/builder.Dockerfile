@@ -13,6 +13,9 @@
 # limitations under the License.
 
 ARG parent_image
+
+FROM gcr.io/fuzzbench/base-image AS base-image
+
 FROM $parent_image
 
 RUN apt-get update && \
@@ -32,7 +35,22 @@ RUN apt-get update && \
         # for QEMU mode
         ninja-build \
         gcc-$(gcc --version|head -n1|sed 's/\..*//'|sed 's/.* //')-plugin-dev \
-        libstdc++-$(gcc --version|head -n1|sed 's/\..*//'|sed 's/.* //')-dev
+        libstdc++-$(gcc --version|head -n1|sed 's/\..*//'|sed 's/.* //')-dev 
+
+# following steps in C:\Users\sd157\Documents\GitHub\fuzzbench_l1nna\docker\benchmark-builder\Dockerfile
+# to copy python 3.10 before compiling afl
+
+RUN rm -rf /usr/local/bin/python3.8* /usr/local/bin/pip3 /usr/local/lib/python3.8 \
+    /usr/local/include/python3.8 /usr/local/lib/python3.8/site-packages
+
+# Copy latest python3 from base-image into local.
+COPY --from=base-image /usr/local/bin/python3* /usr/local/bin/
+COPY --from=base-image /usr/local/bin/pip3* /usr/local/bin/
+COPY --from=base-image /usr/local/lib/python3.10 /usr/local/lib/python3.10
+COPY --from=base-image /usr/local/include/python3.10 /usr/local/include/python3.10
+COPY --from=base-image /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+
+RUN python3 --version
 
 
 COPY AFLplusplus /afl
@@ -50,5 +68,5 @@ RUN cd /afl && \
     # export AFL_CUSTOM_MUTATOR_ONLY=1 && \
     # AFL_CUSTOM_MUTATOR_LIBRARY=custom_mutators/aflpp \
     # PYTHON_INCLUDE=/ 
-    make && \
+    make distrib && \
     cp utils/aflpp_driver/libAFLDriver.a /
