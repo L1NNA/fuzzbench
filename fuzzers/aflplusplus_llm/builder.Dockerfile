@@ -40,15 +40,26 @@ RUN apt-get update && \
 # following steps in C:\Users\sd157\Documents\GitHub\fuzzbench_l1nna\docker\benchmark-builder\Dockerfile
 # to copy python 3.10 before compiling afl
 
-RUN rm -rf /usr/local/bin/python3.8* /usr/local/bin/pip3 /usr/local/lib/python3.8 \
-    /usr/local/include/python3.8 /usr/local/lib/python3.8/site-packages
 
-# Copy latest python3 from base-image into local.
-COPY --from=base-image /usr/local/bin/python3* /usr/local/bin/
-COPY --from=base-image /usr/local/bin/pip3* /usr/local/bin/
-COPY --from=base-image /usr/local/lib/python3.10 /usr/local/lib/python3.10
-COPY --from=base-image /usr/local/include/python3.10 /usr/local/include/python3.10
-COPY --from=base-image /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+ENV PYTHON_VERSION=3.10.8
+RUN cd /tmp/ && \
+      curl -O https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz &&  \ 
+      tar -xvf Python-$PYTHON_VERSION.tar.xz > /dev/null &&  \
+      cd Python-$PYTHON_VERSION && \
+      ./configure --enable-loadable-sqlite-extensions  --enable-optimizations  > /dev/null && \
+      make -j install > /dev/null &&  \ 
+      rm -r /tmp/Python-$PYTHON_VERSION.tar.xz /tmp/Python-$PYTHON_VERSION &&  \  
+      ln -s /usr/local/bin/python3 /usr/local/bin/python && \
+      ln -s /usr/local/bin/pip3 /usr/local/bin/pip 
+# RUN rm -rf /usr/local/bin/python3.8* /usr/local/bin/pip3 /usr/local/lib/python3.8 \
+#     /usr/local/include/python3.8 /usr/local/lib/python3.8/site-packages
+
+# # Copy latest python3 from base-image into local.
+# COPY --from=base-image /usr/local/bin/python3* /usr/local/bin/
+# COPY --from=base-image /usr/local/bin/pip3* /usr/local/bin/
+# COPY --from=base-image /usr/local/lib/python3.10 /usr/local/lib/python3.10
+# COPY --from=base-image /usr/local/include/python3.10 /usr/local/include/python3.10
+# COPY --from=base-image /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
 
 RUN python3 --version
 
