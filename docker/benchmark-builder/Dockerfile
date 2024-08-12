@@ -42,11 +42,34 @@ RUN rm -rf /usr/local/bin/python3.8* /usr/local/bin/pip3 /usr/local/lib/python3.
     /usr/local/include/python3.8 /usr/local/lib/python3.8/site-packages
 
 # Copy latest python3 from base-image into local.
-COPY --from=base-image /usr/local/bin/python3* /usr/local/bin/
-COPY --from=base-image /usr/local/bin/pip3* /usr/local/bin/
-COPY --from=base-image /usr/local/lib/python3.10 /usr/local/lib/python3.10
-COPY --from=base-image /usr/local/include/python3.10 /usr/local/include/python3.10
+# COPY --from=base-image /usr/local/bin/python3* /usr/local/bin/
+# COPY --from=base-image /usr/local/bin/pip3* /usr/local/bin/
+# COPY --from=base-image /usr/local/lib/python3.10 /usr/local/lib/python3.10
+# COPY --from=base-image /usr/local/include/python3.10 /usr/local/include/python3.10
+
+ENV PYTHON_VERSION 3.10.8
+RUN cd /tmp/ && \
+    curl -O https://www.python.org/ftp/python/$PYTHON_VERSION/Python-$PYTHON_VERSION.tar.xz && \
+    tar -xvf Python-$PYTHON_VERSION.tar.xz > /dev/null && \
+    cd Python-$PYTHON_VERSION && \
+    ./configure \
+        --enable-loadable-sqlite-extensions \
+        --enable-optimizations \
+        --enable-shared \
+        > /dev/null && \
+    make -j install > /dev/null && \
+    ldconfig && \
+    rm -r /tmp/Python-$PYTHON_VERSION.tar.xz /tmp/Python-$PYTHON_VERSION && \
+    rm -f /usr/local/bin/python &&\
+    ln -s /usr/local/bin/python3 /usr/local/bin/python && \
+    rm -f /usr/local/bin/pip &&\
+    ln -s /usr/local/bin/pip3 /usr/local/bin/pip
+
+
+# Install common python dependencies.
+COPY ./requirements.txt /tmp
 COPY --from=base-image /usr/local/lib/python3.10/site-packages /usr/local/lib/python3.10/site-packages
+RUN python3 -m pip install -r /tmp/requirements.txt
 
 # Copy the entire fuzzers directory tree to allow for module dependencies.
 COPY fuzzers $SRC/fuzzers

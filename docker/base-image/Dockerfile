@@ -39,15 +39,17 @@ RUN cd /tmp/ && \
     ./configure \
         --enable-loadable-sqlite-extensions \
         --enable-optimizations \
+        --enable-shared \
         > /dev/null && \
     make -j install > /dev/null && \
+    ldconfig && \
     rm -r /tmp/Python-$PYTHON_VERSION.tar.xz /tmp/Python-$PYTHON_VERSION && \
     ln -s /usr/local/bin/python3 /usr/local/bin/python && \
     ln -s /usr/local/bin/pip3 /usr/local/bin/pip
 
 # Install common python dependencies.
 COPY ./requirements.txt /tmp
-RUN pip install -r /tmp/requirements.txt
+RUN python3 -m pip install -r /tmp/requirements.txt
 
 # Install dependencies required by google-cloud-cli.
 RUN apt-get update && \
