@@ -265,7 +265,7 @@ def fuzz(input_corpus,
     if os.path.exists(cmplog_target_binary) and no_cmplog is False:
         flags += ['-c', cmplog_target_binary]
 
-    #os.environ['AFL_IGNORE_TIMEOUTS'] = '1'
+    # os.environ['AFL_IGNORE_TIMEOUTS'] = '1'
     os.environ['AFL_IGNORE_UNKNOWN_ENVS'] = '1'
     os.environ['AFL_FAST_CAL'] = '1'
     os.environ['AFL_NO_WARN_INSTABILITY'] = '1'
@@ -275,11 +275,11 @@ def fuzz(input_corpus,
         os.environ['AFL_CMPLOG_ONLY_NEW'] = '1'
         if 'ADDITIONAL_ARGS' in os.environ:
             flags += os.environ['ADDITIONAL_ARGS'].split(' ')
-    
+
     # custom mutator
-    os.environ['AFL_CUSTOM_MUTATOR_ONLY']='1'
-    os.environ['PYTHONPATH']='/src/fuzzers/aflplusplus_llm/AFLplusplus/custom_mutators/examples/'
-    os.environ['AFL_PYTHON_MODULE']='example'
+    os.environ['AFL_CUSTOM_MUTATOR_ONLY'] = '1'
+    os.environ['PYTHONPATH'] = '/src/fuzzers/aflplusplus_llm/AFLplusplus/custom_mutators/examples/'
+    os.environ['AFL_PYTHON_MODULE'] = 'wrapper_afl_min'
 
     afl_fuzzer.run_afl_fuzz(input_corpus,
                             output_corpus,

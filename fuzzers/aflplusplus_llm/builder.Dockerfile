@@ -57,20 +57,12 @@ RUN cd /tmp/ && \
     make -j install > /dev/null && \
     ldconfig && \
     rm -r /tmp/Python-$PYTHON_VERSION.tar.xz /tmp/Python-$PYTHON_VERSION && \
-    rm -f /usr/local/bin/python &&\
+    rm -f /usr/local/bin/python && \
     ln -s /usr/local/bin/python3 /usr/local/bin/python && \
-    rm -f /usr/local/bin/pip &&\
+    rm -f /usr/local/bin/pip && \
     ln -s /usr/local/bin/pip3 /usr/local/bin/pip
 
 RUN ldconfig
-RUN python -c 'print(11111)'
-RUN python --version
-RUN python3 --version
-RUN python3 -c 'print(11111)'
-# Download afl++.
-# RUN cd /afl && \
-#     git checkout 56d5aa3101945e81519a3fac8783d0d8fad82779 || \
-#     true
 
 # Build without Python support as we don't need it.
 # Set AFL_NO_X86 to skip flaky tests.
