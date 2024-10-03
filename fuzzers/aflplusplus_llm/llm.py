@@ -24,8 +24,12 @@ def consume_messages():
         # if queue_length == 0:
         #     print("No messages in the queue. Terminating consumer...")
         #     break
+        try:
+            message = redisdb.blpop(CONSUMER_NAME, timeout=30)
+        except UnicodeDecodeError:
+            message = repr(message)
+            print(f"Decoded consumed message: {message}")
 
-        message = redisdb.blpop(CONSUMER_NAME, timeout=30)
         if message:
             # message is in tupple for blpop.
             print(f"Consumed: {message}")
