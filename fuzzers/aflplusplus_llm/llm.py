@@ -13,7 +13,7 @@ password=os.environ.get('REDIS_PASSWORD', REDIS_PASSWORD)
 hostname=os.environ.get('REDIS_HOST', REDIS_HOST)
 
 # Connect to Redis
-redisdb = redis.Redis(host=hostname, port=REDIS_PORT, password=password, decode_responses=True)
+redisdb = redis.Redis(host=hostname, port=REDIS_PORT, password=password, decode_responses=False)
 
 # Consume messages from Redis
 def consume_messages():
@@ -26,7 +26,7 @@ def consume_messages():
         #     break
         try:
             message = redisdb.blpop(CONSUMER_NAME, timeout=30)
-        except UnicodeDecodeError:
+        except:
             message = repr(message)
             print(f"Decoded consumed message: {message}")
 
