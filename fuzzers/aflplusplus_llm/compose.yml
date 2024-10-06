@@ -8,17 +8,9 @@ services:
       context: .
       dockerfile: llm.Dockerfile
     tty: true
-    environment:
-      #- REDIS_HOST=redis_service // for MacOS or custom network
-      - REDIS_HOST=localhost
-      - REDIS_PASSWORD=password
-      #- LLM_HOST=ollama // for MacOS or custom network
-      - LLM_HOST=localhost
     network_mode: host
   redis_service:
     image: redis:latest
-    ports:
-      - 7379:6379
     command: >
       --requirepass password
     healthcheck:
@@ -29,8 +21,6 @@ services:
     network_mode: host
   llm_service:
     image: ollama/ollama
-    ports:
-      - 17434:11434
     deploy:
       resources:
         reservations:
