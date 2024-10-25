@@ -9,6 +9,7 @@ RUN mkdir /workspace && cd /workspace
 COPY requirements.txt /workspace/requirements.txt
 
 COPY llm.py /workspace
+COPY llm_ollama.py /workspace
 WORKDIR /workspace
 
 RUN python3 -m venv .llm-venv && .llm-venv/bin/pip install -r requirements.txt

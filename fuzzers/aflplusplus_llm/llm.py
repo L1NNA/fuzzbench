@@ -1,4 +1,5 @@
 import redis
+import llm_ollama
 import time, os
 
 MAX_QUEUE_SIZE = 30 
@@ -25,7 +26,14 @@ def consume_messages():
 
             # PONG
             redisdb.ltrim('P2C', -MAX_QUEUE_SIZE, -1)
-            redisdb.rpush('P2C', message[1])
+
+            # ask LLM model
+            #question = f"Based on the following byte type seed, mutate a new byte type seed. Make sure the example is complete and valid. Only return the byte solution. {message}"
+            question = f"Based on the following byte type seed, mutate a new byte type seed. Make sure the example is complete and valid. Only return the byte solution. 0x01 0x02 0x03 0x04 0xFF."
+            response = llm_ollama.ask_gemma2b(question)
+
+            # send the message back to fuzzer
+            redisdb.rpush('P2C', response)
 
         else:
             print("Queue is empty after 30s timeout. Waiting...")

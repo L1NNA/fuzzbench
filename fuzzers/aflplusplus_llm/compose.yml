@@ -20,12 +20,20 @@ services:
       retries: 5
     network_mode: host
   llm_service:
-    image: ollama/ollama
-    deploy:
-      resources:
-        reservations:
-          devices:
-            - driver: nvidia
-              count: 1
-              capabilities: [ gpu ]
+    build:
+      context: .
+      dockerfile: ollama.Dockerfile
+    container_name: llm_service
+    entrypoint: /tmp/run_ollama.sh
+    ports:
+      - "11434:11434"
+    restart: always
+    tty: true
+    # deploy:
+    #   resources:
+    #     reservations:
+    #       devices:
+    #         - driver: nvidia
+    #           count: 1
+    #           capabilities: [ gpu ]
     network_mode: host

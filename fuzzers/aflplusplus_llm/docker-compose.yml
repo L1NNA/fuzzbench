@@ -16,7 +16,7 @@ services:
   redis_service:
     image: redis:latest
     ports:
-      - 7379:6379
+      - 6379:6379
     command: >
       --requirepass password
     healthcheck:
@@ -28,9 +28,15 @@ services:
     network_mode: host
 
   llm_service:
-    image: ollama/ollama
+    build:
+      context: .
+      dockerfile: ollama.Dockerfile
+    container_name: llm_service
+    entrypoint: /tmp/run_ollama.sh
     ports:
-      - 17434:11434
+      - "11434:11434"
+    restart: always
+    tty: true
     #deploy:
     #  resources:
     #    reservations:
