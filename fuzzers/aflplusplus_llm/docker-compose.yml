@@ -37,15 +37,7 @@ services:
       - "11434:11434"
     restart: always
     tty: true
-    deploy:
-     resources:
-       reservations:
-         devices:
-           - driver: nvidia
-             count: 1
-             capabilities: [ gpu ]
+    runtime: nvidia
+    environment:
+      - NVIDIA_VISIBLE_DEVICES=all
     network_mode: host
-
-# networks:
-#   myapp_net:
-#     driver: bridge
